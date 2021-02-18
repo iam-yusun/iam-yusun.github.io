@@ -504,7 +504,6 @@ design/images/YI4jCU8N421QDp39piFA9uw2gWA.png
 design/images/QdHqwLI85bpEyY1lDvKLVuk.png
 design/images/DoSuihUqidxWGt5Dkne0gcUxvh0.png
 design/images/CyfL9Pbmn4yvHHl6Sa1JEZLJnU.png
-design/images/CRVa0krmowWKZujp3V6KhuwBUw.png
 code/style.css
 assets/dummy-0.jpg
 index.html
