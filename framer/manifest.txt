@@ -637,10 +637,10 @@ node_modules/@framer/anneshlee211.animated-text/code/1. Middle Reveal.tsx
 node_modules/@framer/anneshlee211.animated-text/README.md
 design/images/vIabv9tgkkfUVzsbKbrYUETE.jpg
 design/images/u5zSxz4HjHi7XGKbvRnm2dwD48.png
+design/images/tVBObEPsFYKlXKiaZd7G8NQeg.json
 design/images/sZokvuedGlweltCowsN7112qWg.json
 design/images/rXErueQmxuHD9LHsBzDvwDD2DvY.jpg
 design/images/hAHiQu7NRuDMnuTz8TZYLFy0nE.jpg
-design/images/biJ2dQpVM3AoKqFFJFJMhcdQqqI.png
 design/images/YI4jCU8N421QDp39piFA9uw2gWA.png
 design/images/VAQrxPYGNo8XH3phZ2R0zFExVA.png
 design/images/SHl5yjReNVRHuzT1I8N2Id2hzUY.png
@@ -648,8 +648,6 @@ design/images/SCtD3cpmQyzh1kGZQIhqnueHOM.json
 design/images/RvqWOV92HphZakYNtmgX1wULOw.json
 design/images/RvYCUE2XuhlegKXyyzhq1LFU8.json
 design/images/QdHqwLI85bpEyY1lDvKLVuk.png
-design/images/DoSuihUqidxWGt5Dkne0gcUxvh0.png
-design/images/CyfL9Pbmn4yvHHl6Sa1JEZLJnU.png
 design/images/B3qATCVQxMGjBI3jALPoBHGRdw.png
 design/images/8aDr87PdtPazVencBmuR9yNqYA.json
 design/images/7bjVkdAoQysnh9guv7wZ8bC7ZA0.jpg
