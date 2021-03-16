@@ -637,17 +637,12 @@ node_modules/@framer/anneshlee211.animated-text/code/1. Middle Reveal.tsx
 node_modules/@framer/anneshlee211.animated-text/README.md
 design/images/vIabv9tgkkfUVzsbKbrYUETE.jpg
 design/images/u5zSxz4HjHi7XGKbvRnm2dwD48.png
-design/images/tPos5wd5JD8ldrWPj7BaZc3QXU.png
 design/images/sZokvuedGlweltCowsN7112qWg.json
 design/images/rXErueQmxuHD9LHsBzDvwDD2DvY.jpg
-design/images/qZQaERUg3s8GnN6EDguS2X7Jhg.png
-design/images/muc0OygkWU9KMJi43VUzk1Pwz8.png
-design/images/jV9qM3a9FuJymkF4ZSLJDOt9CBk.png
 design/images/hAHiQu7NRuDMnuTz8TZYLFy0nE.jpg
 design/images/biJ2dQpVM3AoKqFFJFJMhcdQqqI.png
 design/images/YI4jCU8N421QDp39piFA9uw2gWA.png
 design/images/VAQrxPYGNo8XH3phZ2R0zFExVA.png
-design/images/UDpaiIsuoHEKVJATjZt9AHs2lVQ.png
 design/images/SHl5yjReNVRHuzT1I8N2Id2hzUY.png
 design/images/SCtD3cpmQyzh1kGZQIhqnueHOM.json
 design/images/RvqWOV92HphZakYNtmgX1wULOw.json
