@@ -1,21 +1,14 @@
 /// <reference types="google.fonts" />
 /// <reference types="react" />
-import { ContentBlock } from 'draft-js';
-import { ContentState } from 'draft-js';
-import { DraftInlineStyle } from 'draft-js';
 import { HTMLMotionProps } from 'framer-motion';
-import { List } from 'immutable';
 import { ListenerFn } from 'eventemitter3';
 import { MotionStyle } from 'framer-motion';
 import { MotionTransform } from 'framer-motion';
 import { MotionValue } from 'framer-motion';
 import { PanInfo } from 'framer-motion';
-import { RawDraftContentState } from 'draft-js';
 import * as React from 'react';
 import { ReactNode } from 'react';
-import { Record } from 'immutable';
 import { RefObject } from 'react';
-import { SelectionState } from 'draft-js';
 import { Spring } from 'framer-motion';
 import { Transition } from 'framer-motion';
 import { Tween } from 'framer-motion';
@@ -339,10 +332,18 @@ declare interface AnimatorClass<Value, Options = any> {
 /** @public */
 export declare interface ArrayControlDescription<P = any> extends BaseControlDescription<P> {
     type: ControlType.Array;
-    propertyControl: FlatControlDescription<P>;
+    control: ArrayItemControlDescription<P>;
+    /** @deprecated: This property has been renamed to control. */
+    propertyControl?: ArrayItemControlDescription<P>;
     maxCount?: number;
     defaultValue?: any[];
 }
+
+/**
+ * Array sub type
+ * @public
+ */
+export declare type ArrayItemControlDescription<P = any> = Omit<NumberControlDescription<P>, "hidden"> | Omit<EnumControlDescription<P>, "hidden"> | Omit<BooleanControlDescription<P>, "hidden"> | Omit<StringControlDescription<P>, "hidden"> | Omit<ColorControlDescription<P>, "hidden"> | Omit<FusedNumberControlDescription<P>, "hidden"> | Omit<SegmentedEnumControlDescription<P>, "hidden"> | Omit<ImageControlDescription<P>, "hidden"> | Omit<FileControlDescription<P>, "hidden"> | Omit<ComponentInstanceDescription<P>, "hidden"> | Omit<TransitionControlDescription<P>, "hidden"> | Omit<ObjectControlDescription<P>, "hidden">;
 
 /* Excluded from this release type: Asset */
 
@@ -354,17 +355,24 @@ export declare interface ArrayControlDescription<P = any> extends BaseControlDes
 
 /**
  * Enable or disable the automatic generation of layout ids for canvas layers.
- * By default layout ids are generated for all layers created on the Framer canvas.
- * However, layout ids are not generated for any layer that is a descendant of a code component.
- * Sometimes you will want to enable layout id generation for descendants of your code components when they use children, slots, or import design components,
- * and you want those layers to animate with magic motion transitions.
+ * By default layout ids are generated for all layers created on the Framer
+ * canvas. However, layout ids are not generated for any layer that is a
+ * descendant of a code component. Sometimes you will want to enable layout id
+ * generation for descendants of your code components when they use children,
+ * slots, or import design components, and you want those layers to animate with
+ * magic motion transitions.
  *
- * You can enable that behavior by wrapping your code component in <AutomaticLayoutIds enabled> ... </AutomaticLayoutIds>.
+ * You can enable that behavior by wrapping your code component like this
+ * ```typescript
+ * <AutomaticLayoutIds enabled>
+ *  <YourComponent/>
+ * </AutomaticLayoutIds>
+ * ```
  * @public
  */
-export declare const AutomaticLayoutIds: ({ enabled, ...props }: React.PropsWithChildren<{
-    enabled?: boolean | undefined;
-}>) => JSX.Element;
+export declare function AutomaticLayoutIds({ enabled, ...props }: React.PropsWithChildren<{
+    enabled?: boolean;
+}>): JSX.Element;
 
 /* Excluded from this release type: Axis */
 
@@ -481,8 +489,6 @@ export declare interface BlendingProperties {
     blendingMode: BlendingMode;
 }
 
-/* Excluded from this release type: BlockProps */
-
 /** @public */
 export declare interface BooleanControlDescription<P = any> extends BaseControlDescription<P> {
     type: ControlType.Boolean;
@@ -518,11 +524,11 @@ export declare namespace BoxShadow {
 
 /** @public */
 export declare interface BoxShadowProperties {
-    shadows: BoxShadow[];
+    shadows: Readonly<BoxShadow[]>;
 }
 
 declare interface BoxShadowProperties_2 {
-    shadows: BoxShadow[];
+    shadows: Readonly<BoxShadow[]>;
 }
 
 /* Excluded from this release type: calculateRect */
@@ -540,6 +546,8 @@ declare interface Change<Value> {
 }
 
 declare type ClassName = string | false | void | null | 0;
+
+declare type Cleanup = () => void;
 
 /* Excluded from this release type: CodeComponentPresentation */
 
@@ -1256,7 +1264,7 @@ export declare interface ConstraintProperties extends Partial<WithFractionOfFree
 /* Excluded from this release type: ContainerKey */
 
 /** @public */
-export declare type ControlDescription<P = any> = NumberControlDescription<P> | EnumControlDescription<P> | BooleanControlDescription<P> | StringControlDescription<P> | ColorControlDescription<P> | FusedNumberControlDescription<P> | SegmentedEnumControlDescription<P> | ImageControlDescription<P> | FileControlDescription<P> | ComponentInstanceDescription<P> | ArrayControlDescription<P> | EventHandlerControlDescription<P> | TransitionControlDescription<P>;
+export declare type ControlDescription<P = any> = NumberControlDescription<P> | EnumControlDescription<P> | BooleanControlDescription<P> | StringControlDescription<P> | ColorControlDescription<P> | FusedNumberControlDescription<P> | SegmentedEnumControlDescription<P> | ImageControlDescription<P> | FileControlDescription<P> | ComponentInstanceDescription<P> | ArrayControlDescription<P> | EventHandlerControlDescription<P> | TransitionControlDescription<P> | ObjectControlDescription<P>;
 
 /* Excluded from this release type: ControlIcon */
 
@@ -1361,10 +1369,15 @@ export declare const enum ControlType {
      */
     String = "string",
     /**
-     * A control that can be used to take a single number or four distinct numeric input fields.
-     * The typical use case for this control is for visual properties like border, padding or margin.
-     * It will display an input field to accept a single value, alongside a segmented control
-     * allowing four distinct values to be provided.
+     * A control that can be used to take a single number or four distinct
+     * numeric input fields. The typical use case for this control is for visual
+     * properties like border, padding or margin. It will display an input field
+     * to accept a single value, alongside a segmented control allowing four
+     * distinct values to be provided.
+     *
+     * You can also set the default value for each valueKey as well as the
+     * toggleKey by setting their values on `defaultProps`.
+     *
      *
      * ```javascript
      * export function MyComponent({
@@ -1393,6 +1406,16 @@ export declare const enum ControlType {
      *     min: 0,
      *   },
      * })
+     *
+     * // Set the default value for each valueKey as well as the toggleKey by setting their values on `defaultProps`:
+     * MyComponent.defaultProps = {
+     *     radius: 10,
+     *     isMixed: true,
+     *     topLeft: 5,
+     *     topRight: 15,
+     *     bottomRight: 5,
+     *     bottomLeft: 15,
+     * }
      * ```
      */
     FusedNumber = "fusednumber",
@@ -1540,13 +1563,19 @@ export declare const enum ControlType {
      */
     ComponentInstance = "componentinstance",
     /**
-     * A control that allows multiple values per `ControlType`, provided as an array via properties.
-     * For most control types this will be displayed as an additional
-     * section in the properties panel allowing as many fields to be provided
-     * as required.
+     * A control that allows multiple values per `ControlType`, provided as an
+     * array via properties. For most control types this will be displayed as an
+     * additional section in the properties panel allowing as many fields to be
+     * provided as required.
      *
-     * For a {@link ControlType.ComponentInstance} the Frame will also gain
-     * an additional outlet control on the Canvas that allows links to be created between frames.
+     * For a {@link ControlType.ComponentInstance} the Frame will also gain an
+     * additional outlet control on the Canvas that allows links to be created
+     * between frames.
+     *
+     * Group properties together by using an object control.
+     *
+     * For multiple {@link ControlType.FusedNumber} values, you can pass in an
+     * array of single values as the React default prop.
      *
      * ```javascript
      * export function MyComponent(props) {
@@ -1554,10 +1583,11 @@ export declare const enum ControlType {
      *   return <Stack size={"100%"}>{frames}</Stack>
      * }
      *
+     * // Add a repeatable image property control
      * addPropertyControls(MyComponent, {
      *   images: {
      *     type: ControlType.Array,
-     *     propertyControl: {
+     *     control: {
      *       type: ControlType.Image
      *     }
      *   },
@@ -1565,50 +1595,100 @@ export declare const enum ControlType {
      *   maxCount: 5,
      * })
      *
+     * // Add a multi-connector to your component to connect components on the canvas
      * addPropertyControls(MyComponent, {
      *   children: {
      *     type: ControlType.Array,
-     *     propertyControl: {
+     *     control: {
      *       type: ControlType.ComponentInstance
      *     },
      *     maxCount: 5,
      *   },
      * })
+     *
+     * // Add a list of objects
+     * addPropertyControls(MyComponent, {
+     *   myArray: {
+     *     type: ControlType.Array,
+     *     control: {
+     *       type: ControlType.Object,
+     *       controls: {
+     *         title: { type: ControlType.String, defaultValue: "Employee" },
+     *         avatar: { type: ControlType.Image },
+     *       },
+     *     },
+     *     defaultValue: [
+     *       { title: "Jorn" },
+     *       { title: "Koen" },
+     *     ],
+     *   },
+     * })
+     *
+     * // For multiple values, you can pass in an array of single values as the React default prop.
+     * MyComponent.defaultProps = {
+     *    paddings: [5, 10, 15],
+     * }
      * ```
+     *
      */
     Array = "array",
     /**
-     * A control that represents an event handler.
+     * A control that exposes events in the prototyping panel within the Framer UI. When choosing an event from the prototyping panel, you can select from a list of actions to trigger.
      *
      * ```javascript
-     * function MyComponent(props) {
+     * export function MyComponent(props) {
      *   return <Frame onTap={props.onTap} size={"100%"} />
      * }
      *
      * addPropertyControls(MyComponent, {
      *   onTap: {
      *     type: ControlType.EventHandler,
-     *   }
+     *   },
      * })
      * ```
      */
     EventHandler = "eventhandler",
     /**
-     * A control that customises a Framer Motion transition.
+     * A control that allows for editing Framer Motion transition options within the Framer UI.
      *
      * ```javascript
-     * function MyComponent(props) {
-     *   return <Frame onTap={props.onTap} size={"100%"} />
+     * export function MyComponent(props) {
+     *   return (
+     *       <Frame
+     *          animate={{ scale: 2 }}
+     *          transition={props.transition}
+     *       />
+     *   )
      * }
      *
      * addPropertyControls(MyComponent, {
      *   transition: {
-     *     type: ControlType.Transition,
+     *       type: ControlType.Transition,
+     *   },
+     * })
+     * ```
+     */
+    Transition = "transition",
+    /**
+     * A control that allows for grouping multiple properties as an object.
+     *
+     * ```javascript
+     * export function MyComponent(props) {
+     *   return <Frame opacity={props.myObject.opacity} background={props.myObject.tint} />
+     * }
+     *
+     * addPropertyControls(MyComponent, {
+     *   myObject: {
+     *     type: ControlType.Object,
+     *     controls: {
+     *       opacity: { type: ControlType.Number },
+     *       tint: { type: ControlType.Color },
+     *     }
      *   }
      * })
      * ```
      */
-    Transition = "transition"
+    Object = "object"
 }
 
 /* Excluded from this release type: ConvertColor */
@@ -2176,34 +2256,7 @@ export declare interface DOMLayoutProps {
     /* Excluded from this release type: _domRect */
 }
 
-/* Excluded from this release type: draftBlockRendererFunction */
-
-/* Excluded from this release type: draftContentStateToHTML */
-
 /* Excluded from this release type: DraftFontProperties */
-
-declare type DraftPrefix = keyof typeof DraftPrefixes;
-
-declare const DraftPrefixes: {
-    FONT: string;
-    COLOR: string;
-    SIZE: string;
-    LETTERSPACING: string;
-    LINEHEIGHT: string;
-    ALIGN: string;
-    BOLD: string;
-    ITALIC: string;
-    UNDERLINE: string;
-    SELECTION: string;
-    TEXTDECORATION: string;
-    TEXTTRANSFORM: string;
-};
-
-/* Excluded from this release type: DraftStyleDefinitions */
-
-/* Excluded from this release type: draftStyleDefinitions */
-
-/* Excluded from this release type: draftStyleFunction */
 
 declare type DragEventHandler<Draggable> = (event: FramerEvent, draggable: Draggable) => void;
 
@@ -2315,10 +2368,7 @@ declare class EventEmitter<EventName> {
 
 declare type EventHandler = (event: FramerEvent) => void;
 
-/**
- * @remarks This feature is still in beta
- * @public
- */
+/** @public */
 export declare interface EventHandlerControlDescription<P = any> extends BaseControlDescription<P> {
     type: ControlType.EventHandler;
 }
@@ -2352,7 +2402,7 @@ export declare interface FilterNumberProperties {
 
 /** @public */
 export declare interface FilterProperties extends FilterNumberProperties {
-    dropShadows: Shadow[];
+    dropShadows: Readonly<Shadow[]>;
 }
 
 /**
@@ -2361,8 +2411,6 @@ export declare interface FilterProperties extends FilterNumberProperties {
 declare type FinishFunction = (transaction: TransactionId) => void;
 
 /* Excluded from this release type: finiteNumber */
-
-declare type FlatControlDescription<P = any> = Omit_2<NumberControlDescription<P>, "hidden"> | Omit_2<EnumControlDescription<P>, "hidden"> | Omit_2<BooleanControlDescription<P>, "hidden"> | Omit_2<StringControlDescription<P>, "hidden"> | Omit_2<ColorControlDescription<P>, "hidden"> | Omit_2<FusedNumberControlDescription<P>, "hidden"> | Omit_2<SegmentedEnumControlDescription<P>, "hidden"> | Omit_2<ImageControlDescription<P>, "hidden"> | Omit_2<FileControlDescription<P>, "hidden"> | Omit_2<ComponentInstanceDescription<P>, "hidden"> | Omit_2<TransitionControlDescription<P>, "hidden">;
 
 declare type FlexDirection = "column" | "row" | "column-reverse" | "row-reverse";
 
@@ -2415,7 +2463,7 @@ export declare const Frame: React.ForwardRefExoticComponent<Partial<FrameProps> 
  * @internalremarks do no use separately from FrameProps
  * @public
  * */
-export declare interface FrameLayoutProperties {
+export declare interface FrameLayoutProperties extends PositionStickyProperties {
     /**
      * Distance from the top in pixels. Set to `0` by default.
      * @remarks
@@ -2680,33 +2728,15 @@ declare type GetChildrenFn = (element: Element) => Element[];
 
 /* Excluded from this release type: getConfigFromVekterURL */
 
-/* Excluded from this release type: getDraftContent */
-
-/* Excluded from this release type: getDraftEmptyStyles */
-
-/* Excluded from this release type: getDraftFirstTextAlignment */
-
-/* Excluded from this release type: getDraftRangeFromSelection */
-
-/* Excluded from this release type: getDraftReplacedStyles */
-
-/* Excluded from this release type: getDraftStylesWithPrefix */
-
-/* Excluded from this release type: getDraftStylesWithPrefixCoverRange */
-
-/* Excluded from this release type: getDraftText */
-
-/* Excluded from this release type: getHTMLSizeCached */
+/* Excluded from this release type: _getCSSTextColorFromStyle */
 
 /* Excluded from this release type: GetLayoutId */
+
+/* Excluded from this release type: getMeasurableCodeComponentChildren */
 
 /* Excluded from this release type: getMergedConstraintsProps */
 
 /* Excluded from this release type: getPropertyControls */
-
-/* Excluded from this release type: getReactStylesFromDraft */
-
-/* Excluded from this release type: getStyleForTypefaceOrSelector */
 
 /* Excluded from this release type: GoogleFontSource */
 
@@ -2785,6 +2815,8 @@ declare interface InterpolationOptions {
 
 /* Excluded from this release type: isAnimatable */
 
+declare type IsCurrentCallback = (isCurrent: boolean) => void | Cleanup;
+
 /* Excluded from this release type: isDesignDefinition */
 
 /* Excluded from this release type: isEqual */
@@ -2835,7 +2867,7 @@ export declare interface LayerProps extends IdentityProps, WillChangeTransformPr
 
 /* Excluded from this release type: LayoutIdContext */
 
-declare interface LayoutProperties extends PositionProperties, SizeProperties {
+declare interface LayoutProperties extends PositionProperties, PositionStickyProperties, SizeProperties {
     /* Excluded from this release type: widthType */
     /* Excluded from this release type: heightType */
 }
@@ -3122,6 +3154,27 @@ export declare interface NumberControlDescription<P = any> extends BaseControlDe
     displayStepper?: boolean;
 }
 
+/**
+ * @remarks This feature is still in beta
+ * @public
+ */
+export declare interface ObjectControlDescription<P = any> extends BaseControlDescription<P> {
+    type: ControlType.Object;
+    controls: {
+        [key: string]: ObjectPropertyControlDescription;
+    };
+    defaultValue?: {
+        [key: string]: any;
+    };
+}
+
+/**
+ * Object sub type
+ * Currently not supported: fused number, component instance, event handler, array
+ * @public
+ */
+export declare type ObjectPropertyControlDescription<P = any> = Omit<NumberControlDescription<P>, "hidden"> | Omit<EnumControlDescription<P>, "hidden"> | Omit<BooleanControlDescription<P>, "hidden"> | Omit<StringControlDescription<P>, "hidden"> | Omit<ColorControlDescription<P>, "hidden"> | Omit<SegmentedEnumControlDescription<P>, "hidden"> | Omit<ImageControlDescription<P>, "hidden"> | Omit<FileControlDescription<P>, "hidden"> | Omit<TransitionControlDescription<P>, "hidden">;
+
 /* Excluded from this release type: ObservableObject */
 
 /**
@@ -3134,7 +3187,10 @@ declare type Observer<Value> = {
 
 declare type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
-declare type Omit_2<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+declare interface OptionalSizeProps {
+    width?: number | string;
+    height?: number | string;
+}
 
 declare type Overflow = "visible" | "hidden" | "scroll" | "auto";
 
@@ -3548,8 +3604,6 @@ export declare interface PageProps extends PageProperties, Partial<Omit<FramePro
 
 /* Excluded from this release type: PathSegment */
 
-/* Excluded from this release type: PathSegmentRecord */
-
 /* Excluded from this release type: PathSegments */
 
 declare interface PlaybackControls {
@@ -3602,6 +3656,15 @@ declare interface PositionProperties {
     bottom: number | string;
     left: number | string;
     center: "x" | "y" | boolean;
+}
+
+/** @public */
+export declare interface PositionStickyProperties {
+    /* Excluded from this release type: positionSticky */
+    /* Excluded from this release type: positionStickyTop */
+    /* Excluded from this release type: positionStickyRight */
+    /* Excluded from this release type: positionStickyBottom */
+    /* Excluded from this release type: positionStickyLeft */
 }
 
 /* Excluded from this release type: PresentationTree */
@@ -3694,8 +3757,6 @@ export declare interface RadiusProperties {
 
 declare type RadiusValue = number | Animatable<number> | string;
 
-declare type Range = [number, number];
-
 /* Excluded from this release type: ReactComponentDefinition */
 
 /* Excluded from this release type: ReactComponentDefinitionProvider */
@@ -3742,6 +3803,13 @@ export declare namespace Rect {
     /* Excluded from this release type: merge */
     /* Excluded from this release type: intersection */
     /* Excluded from this release type: points */
+    /** Takes a rect and transforms it by a matrix, resulting in the bounding rectangle of the
+     * rotated and/or translated original.
+     * @param rect - rectangle to transform
+     * @param matrix - matrix to transform by
+     * @returns The bounding rectangle of the rotated and/or translated rect.
+     */
+    const transform: (rect: Rect, matrix: DOMMatrixReadOnly) => Rect;
     /* Excluded from this release type: containsPoint */
     /**
      * Returns wether a rect contains another rect entirely
@@ -4031,6 +4099,17 @@ export declare interface ScrollConfig {
      * @public
      * */
     scrollAnimate?: FrameProps["animate"];
+    /**
+     * Flag the scroll component to reset it's scroll offset when it becomes
+     * visible in Framer.
+     *
+     * @remarks
+     * ```jsx
+     * <Scroll resetOffset={true} />
+     * ```
+     * @public
+     * */
+    resetOffset?: boolean;
     /* Excluded from this release type: __fromCodeComponentNode */
     /* Excluded from this release type: className */
 }
@@ -4388,8 +4467,6 @@ export declare interface StringControlDescription<P = any> extends BaseControlDe
 
 /* Excluded from this release type: StrokeAlignment */
 
-/* Excluded from this release type: StyleHandler */
-
 /* Excluded from this release type: SVG */
 
 /* Excluded from this release type: SVGProperties */
@@ -4409,30 +4486,14 @@ declare interface TensionFrictionSpringOptions {
 
 /* Excluded from this release type: TextAlignment */
 
-/* Excluded from this release type: TextBlock */
-
-/* Excluded from this release type: TextBlockProps */
-
 /** @public */
 export declare interface TextColorProperties {
     color: Color | string;
 }
 
-/* Excluded from this release type: TextDecoration */
-
-/* Excluded from this release type: TextDecoration_2 */
-
-/* Excluded from this release type: TextDirection */
-
-/* Excluded from this release type: TextLineHeightUnit */
-
 /* Excluded from this release type: TextProperties */
 
 /* Excluded from this release type: TextProps */
-
-/* Excluded from this release type: TextTransform */
-
-/* Excluded from this release type: TextTransform_2 */
 
 /* Excluded from this release type: TextVerticalAlignment */
 
@@ -4509,6 +4570,8 @@ export declare function useIsInCurrentNavigationTarget(): boolean;
  */
 export declare function useNavigation(): NavigationInterface;
 
+/* Excluded from this release type: useOnCurrentTargetChange */
+
 /* Excluded from this release type: UserConstraintValues */
 
 /* Excluded from this release type: useRenderEnvironment */
@@ -4555,7 +4618,7 @@ declare interface VariantState {
  * This version is automatically updated by the Makefile
  * @public
  */
-export declare const version = "1.2.20";
+export declare const version = "1.2.26";
 
 /**
  * @internalremarks do no use separately from FrameProps
