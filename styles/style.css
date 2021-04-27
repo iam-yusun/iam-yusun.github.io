@@ -106,7 +106,7 @@ body input.component:focus {
     z-index: auto;
 }
 
-.textEditor--hasAutoSize .DraftEditor-editorContainer [data-text] {
+.textEditor--hasAutoWidth .DraftEditor-editorContainer [data-text] {
     white-space: pre;
 }
 

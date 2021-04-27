@@ -353,6 +353,8 @@ export declare type ArrayItemControlDescription<P = any> = Omit<NumberControlDes
 
 /* Excluded from this release type: AssetResolver */
 
+/* Excluded from this release type: AssetSize */
+
 /**
  * Enable or disable the automatic generation of layout ids for canvas layers.
  * By default layout ids are generated for all layers created on the Framer
@@ -532,6 +534,8 @@ declare interface BoxShadowProperties_2 {
 }
 
 /* Excluded from this release type: calculateRect */
+
+declare type CallbackMap = Record<string, (() => void) | undefined>;
 
 /* Excluded from this release type: callEach */
 
@@ -2961,7 +2965,7 @@ export declare function MotionSetup({ children }: Props_3): JSX.Element;
  * @public
  */
 declare interface MultiStopGradient {
-    stops: GradientColorStop[];
+    stops: readonly GradientColorStop[];
 }
 
 /* Excluded from this release type: NavigateTo */
@@ -4538,8 +4542,6 @@ export declare interface TransitionControlDescription<P = any> extends BaseContr
 
 /* Excluded from this release type: TypefaceSourceNames */
 
-declare type UnknownProps = Record<string, unknown>;
-
 /**
  * @public
  */
@@ -4552,6 +4554,10 @@ declare interface UpdateObserver<Value> {
     onUpdate(handler: Observer<Value>): Cancel;
 }
 
+/* Excluded from this release type: useActiveVariantCallback */
+
+/* Excluded from this release type: useAddVariantProps */
+
 /* Excluded from this release type: useAnimatedState */
 export { useInvertedScale }
 
@@ -4562,6 +4568,8 @@ export { useInvertedScale }
  */
 export declare function useIsInCurrentNavigationTarget(): boolean;
 
+/* Excluded from this release type: useIsOnFramerCanvas */
+
 /* Excluded from this release type: useMeasureLayout */
 
 /**
@@ -4571,6 +4579,8 @@ export declare function useIsInCurrentNavigationTarget(): boolean;
 export declare function useNavigation(): NavigationInterface;
 
 /* Excluded from this release type: useOnCurrentTargetChange */
+
+/* Excluded from this release type: useOnVariantChange */
 
 /* Excluded from this release type: UserConstraintValues */
 
@@ -4584,10 +4594,7 @@ export declare function useNavigation(): NavigationInterface;
 
 declare type VariantNames = string[];
 
-/**
- * Variant / Node Id / React Prop / Val
- */
-declare type VariantProps = Record<string, Record<string, UnknownProps>>;
+/* Excluded from this release type: VariantProps */
 
 /* Excluded from this release type: VariantSelector */
 
@@ -4597,9 +4604,9 @@ declare interface VariantState {
     gestureVariant: string | undefined;
     classNames: string;
     transition: Partial<Transition> | undefined;
-    addVariantProps: (elementId: string) => UnknownProps;
     setVariant: (variant: string | typeof CycleVariantState) => void;
     setGestureState: (gestureState: GestureState) => void;
+    addVariantProps?: (id: string) => Record<string, unknown>;
 }
 
 /* Excluded from this release type: Vector */
@@ -4618,7 +4625,7 @@ declare interface VariantState {
  * This version is automatically updated by the Makefile
  * @public
  */
-export declare const version = "1.2.26";
+export declare const version = "1.2.29";
 
 /**
  * @internalremarks do no use separately from FrameProps
